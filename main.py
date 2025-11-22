@@ -347,7 +347,7 @@ if __name__ == "__main__":
     )
 
     lama_model = FastLaMaInpainter(
-        model_path="models/lama-fourier-shallow",
+        model_path="models/lama-places/big-lama-regular",
         checkpoint="best.ckpt",
         max_resolution=512,
         device=torch_device,
@@ -410,7 +410,7 @@ if __name__ == "__main__":
         if informations is not None:
             # Dessiner les points de repère et les masques
             # TODO: remove
-            frame = draw_face_landmarks(frame, informations, face=True)
+            # frame = draw_face_landmarks(frame, informations, face=True)
 
             # Appliquer l'inpainting selon le mode sélectionné
             if inpainting_enabled:
