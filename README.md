@@ -1,0 +1,3 @@
+# Segmentation, Inpainting, Deep Fake software
+This repository contains a collection of tools and software for image segmentation, inpainting, and deep fake generation. These tools leverage advanced machine learning techniques to provide high-quality results for various applications.
+A literature review and comparison of different methods is also included to help users choose the best tool for their needs.
