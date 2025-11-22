@@ -10,7 +10,7 @@ import sys
 
 
 # Ajouter le chemin vers le repo LaMa
-sys.path.append("./lama/")
+sys.path.append(os.path.join(os.path.dirname(__file__), "lama"))
 
 from saicinpainting.training.trainers import load_checkpoint
 from saicinpainting.evaluation.utils import move_to_device
@@ -207,7 +207,7 @@ def basic_impaint(image, informations, bg_image=None):
     for info in informations:
         if "mask" not in info:
             continue
-        mask_uint8 = (info["mask"].data * 255).numpy().astype(np.uint8)
+        mask_uint8 = (info["mask"] * 255).astype(np.uint8)
         if bg_image is not None:
             # Resize bg_image to match the size of the original image
             bg_resized = cv2.resize(bg_image, (image.shape[1], image.shape[0]))
@@ -221,7 +221,7 @@ def basic_impaint(image, informations, bg_image=None):
 
 
 def LaMa_inpaint(
-    image: np.ndarray, informations: list[dict], lama_model: FastLaMaInpainter
+    image: np.ndarray, informations: list, lama_model: FastLaMaInpainter
 ):
     """
     Inpaint the areas defined by the masks in the image using LaMa model.
@@ -235,7 +235,7 @@ def LaMa_inpaint(
     for info in informations:
         if "mask" not in info:
             continue
-        mask_uint8 = (info["mask"].data * 255).numpy().astype(np.uint8)
+        mask_uint8 = (info["mask"] * 255).astype(np.uint8)
         inpainted = lama_model.inpaint(image, mask_uint8)
         result[mask_uint8 != 0] = inpainted[mask_uint8 != 0]
     return result
@@ -265,6 +265,7 @@ def associate_faces_with_masks(face_landmarks_list, masks):
         for mask in masks.data:
             if mask[avg_y, avg_x] != 0:
                 coord["avg_point"] = (avg_x, avg_y)
+                mask = mask.cpu().numpy().astype(np.uint8)
                 coord["mask"] = mask
                 # Créer un masque de la face, on prend le mask original mais uniquement au dessus du menton.
                 face_mask = np.zeros_like(mask, dtype=np.uint8)
@@ -358,8 +359,9 @@ if __name__ == "__main__":
     if image_de_qqn is not None and isinstance(image_de_qqn, str):
         human_photo = fr.load_image_file(image_de_qqn)
         human_to_recognize_enc = fr.face_encodings(human_photo, num_jitters=8)
+    temp = human_to_recognize_enc
 
-    cap = cv2.VideoCapture(4, cv2.CAP_V4L2)
+    cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
     rec = cv2.VideoWriter(
         f'output/output_{"ALL" if image_de_qqn is None else image_de_qqn.split("/")[-1]}.mp4',
         cv2.VideoWriter_fourcc(*"mp4v"),
@@ -386,6 +388,7 @@ if __name__ == "__main__":
     print("  L : Mode inpainting LaMa")
     print("  B : Mode inpainting Basic")
     print("  R : Rafraîchir l'image de référence (pour mode Basic)")
+    print("  F : Retirer la reconnaissance faciale (inpaint tous les visages)")
     print("  Q / ESC : Quitter")
     print("=" * 60 + "\n")
 
@@ -419,20 +422,16 @@ if __name__ == "__main__":
                 elif inpainting_mode == "basic":
                     frame = basic_impaint(frame, informations, bg_image=first_frame)
         else:
-            cv2.putText(
-                frame,
-                "No recognized face detected",
-                (10, 30),
-                cv2.FONT_HERSHEY_SIMPLEX,
-                1,
-                (0, 0, 255),
-                2,
-            )
+            # Aucune information détectée
+            # Afficher un petit point rouge en haut à gauche
+            cv2.circle(frame, (10, 10), 5, (0, 0, 255), -1)
+            pass
 
         # Afficher l'état en bas à gauche
         status_text = f"Inpainting: {'ON' if inpainting_enabled else 'OFF'}"
         if inpainting_enabled:
             status_text += f" ({inpainting_mode.upper()})"
+        status_text += f" | Face Recognition: {'ON' if human_to_recognize_enc is not None else 'OFF'}"
 
         cv2.putText(
             frame,
@@ -468,6 +467,16 @@ if __name__ == "__main__":
                 print("Image de référence rafraîchie")
             else:
                 print("Erreur lors de la capture de l'image de référence")
+
+        elif key == ord("f") or key == ord("F"):
+            if human_to_recognize_enc is not None:
+                human_to_recognize_enc = None
+                print("Reconnaissance faciale désactivée")
+            else:
+                human_to_recognize_enc = temp
+                print("Reconnaissance faciale activée")
+            informations = None
+
 
     cap.release()
     cv2.destroyAllWindows()
