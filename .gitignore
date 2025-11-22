@@ -211,5 +211,10 @@ __marimo__/
 mi7/
 
 # Local data directories
-data/
-output/
+data/*.jpg
+data/*.png
+
+output/*.mp4
+
+# Models
+models/*lama*
