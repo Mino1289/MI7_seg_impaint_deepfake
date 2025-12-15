@@ -7,6 +7,7 @@ import cv2
 from omegaconf import OmegaConf
 import yaml
 import sys
+import time
 
 
 # Ajouter le chemin vers le repo LaMa
@@ -361,9 +362,12 @@ if __name__ == "__main__":
         human_to_recognize_enc = fr.face_encodings(human_photo, num_jitters=8)
     temp = human_to_recognize_enc
 
+    # Image de fond prédéfinie (None pour utiliser la caméra)
+    background_image_path = None  # Ex: "data/background.jpg"
+
     cap = cv2.VideoCapture(0, cv2.CAP_V4L2)
     rec = cv2.VideoWriter(
-        f'output/output_{"ALL" if image_de_qqn is None else image_de_qqn.split("/")[-1]}.mp4',
+        f'output/output_{int(time.time())}.mp4',
         cv2.VideoWriter_fourcc(*"mp4v"),
         30.0,
         (640, 480),
@@ -392,11 +396,26 @@ if __name__ == "__main__":
     print("  Q / ESC : Quitter")
     print("=" * 60 + "\n")
 
-    for i in range(50):
-        ret, first_frame = cap.read()
-        if not ret:
-            print("Erreur lors de la capture de l'image.")
-            exit()
+    # Charger l'image de fond prédéfinie ou capturer depuis la caméra
+    if background_image_path is not None and os.path.exists(background_image_path):
+        first_frame = cv2.imread(background_image_path)
+        if first_frame is not None:
+            # Redimensionner à la taille de la caméra si nécessaire
+            first_frame = cv2.resize(first_frame, (640, 480))
+            print(f"Image de fond chargée depuis: {background_image_path}")
+        else:
+            print(f"Erreur lors du chargement de l'image: {background_image_path}")
+            for i in range(50):
+                ret, first_frame = cap.read()
+                if not ret:
+                    print("Erreur lors de la capture de l'image.")
+                    exit()
+    else:
+        for i in range(50):
+            ret, first_frame = cap.read()
+            if not ret:
+                print("Erreur lors de la capture de l'image.")
+                exit()
 
     while True:
         ret, frame = cap.read()
