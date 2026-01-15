@@ -14,19 +14,19 @@ A real-time video processing system that combines **person segmentation**, **fac
 
 ## 🎬 Résultats
 
-Voici des démonstrations vidéo du système en action :
+Voici des démonstrations du système en action :
 
 ### Vidéo "Dedans"
 
-<video src="resultats/dedans.mp4" controls width="100%"></video>
+![Dedans](resultats/dedans.gif)
 
 ### Vidéo "Neige"
 
-<video src="resultats/neige.mp4" controls width="100%"></video>
+![Neige](resultats/neige.gif)
 
 ### Output Demo
 
-<video src="resultats/output_1765842783.mp4" controls width="100%"></video>
+![Output Demo](resultats/output_1765842783.gif)
 
 ---
 
