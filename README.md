@@ -18,15 +18,15 @@ Voici des démonstrations vidéo du système en action :
 
 ### Vidéo "Dedans"
 
-https://github.com/user-attachments/assets/b41e6f62-16a5-4b9a-b3ae-e3f96b31a21b
+<video src="resultats/dedans.mp4" controls width="100%"></video>
 
 ### Vidéo "Neige"
 
-https://github.com/user-attachments/assets/70fae428-f315-4c9c-bcee-d2dd2b64e45c
+<video src="resultats/neige.mp4" controls width="100%"></video>
 
 ### Output Demo
 
-https://github.com/user-attachments/assets/bc08a5f7-bf2d-4b4c-b88e-dc75f9ad3c30
+<video src="resultats/output_1765842783.mp4" controls width="100%"></video>
 
 ---
 
