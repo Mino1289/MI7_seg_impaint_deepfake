@@ -12,6 +12,24 @@ A real-time video processing system that combines **person segmentation**, **fac
 
 ---
 
+## 🎬 Résultats
+
+Voici des démonstrations vidéo du système en action :
+
+### Vidéo "Dedans"
+
+https://github.com/user-attachments/assets/b41e6f62-16a5-4b9a-b3ae-e3f96b31a21b
+
+### Vidéo "Neige"
+
+https://github.com/user-attachments/assets/70fae428-f315-4c9c-bcee-d2dd2b64e45c
+
+### Output Demo
+
+https://github.com/user-attachments/assets/bc08a5f7-bf2d-4b4c-b88e-dc75f9ad3c30
+
+---
+
 ## Table of Contents
 
 - [Features](#-features)
